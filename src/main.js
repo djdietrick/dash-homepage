@@ -5,6 +5,11 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/functions';
 
+import './styles/main.scss';
+import ShoelaceModelDirective from '@shoelace-style/vue-sl-model';
+Vue.config.ignoredElements = [/^sl-/];
+Vue.use(ShoelaceModelDirective);
+
 Vue.config.productionTip = false;
 
 firebase.initializeApp({

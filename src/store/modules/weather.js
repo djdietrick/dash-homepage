@@ -47,15 +47,17 @@ const actions = {
         } catch(e) {
             console.error("Error getting location: ", e);
         }
-        
-       
-
         dispatch('fetchWeather');
     },
     async calcCoordinates ({commit, state, dispatch}) {
         const getLatLong = functions.httpsCallable('getLatLong');
         const coordinates = await getLatLong(state.location);
-        commit('setCoordinates', coordinates.data);
+        commit('setCoordinates', {
+            lat: coordinates.data.lat,
+            long: coordinates.data.long
+        });
+        let split = coordinates.data.placeName.split(', ');
+        commit('setLocation', `${split[0]}, ${split[1]}`);
         dispatch('fetchWeather');
     },
     async fetchWeather ({commit, state}) {

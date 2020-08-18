@@ -25,7 +25,8 @@ export const getLatLong = functions.https.onCall((data, context) => {
 
       return {
           lat: res.data.features[0].center[1],
-          long: res.data.features[0].center[0]
+          long: res.data.features[0].center[0],
+          placeName: res.data.features[0].place_name
       }
     })
 });

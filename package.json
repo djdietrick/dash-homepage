@@ -7,10 +7,14 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@shoelace-style/vue-sl-model": "^1.0.0",
     "axios": "^0.19.2",
+    "chart.js": "^2.9.3",
+    "element-ui": "^2.13.2",
     "firebase": "^7.17.2",
     "vue": "^2.6.11",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "vuex-persistedstate": "^3.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-router": "~4.5.0",
