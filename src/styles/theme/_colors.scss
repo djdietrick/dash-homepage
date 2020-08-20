@@ -22,11 +22,20 @@ $color-error: #c73d2b;
 $color-grey-dark-1: #777;
 $color-grey-dark-2: #999;
 //$color-grey-dark-3: #333;
-$color-grey-dark-3: #2e2536;
+//$color-grey-dark-3: #2e2536;
+$color-grey-dark-3: #1A1A40;
 
-$color-background: #3b3046;
+//$color-background: #3b3046;
+$color-background: #242350;
+
+// middle #202048
 
 $color-white: #fff;
 $color-black: #000;
 
-$--color-primary: $color-primary;
+$--color-primary: hsl(236, 84%, 66%);
+
+:root {
+    --sl-color-primary-hue: 236;
+    --sl-color-primary-saturation: 84%;
+}

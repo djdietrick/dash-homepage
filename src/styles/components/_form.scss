@@ -1,10 +1,37 @@
 .form {
-
-
-    &__input {
-        background-color: $color-background;
-        padding: 0.5rem 1rem;
-        color: $color-white;
+    &__error {
+        color: $color-error;
+        border: 2px solid $color-error;
+        border-radius: 2px;
+        padding: 1.5rem 3rem;
         font-size: 1.5rem;
+        margin-bottom: 1rem;
+        text-align: center;
+
+        &:focus {
+            outline: none;
+            box-shadow: 0 1rem 2rem rgba($color-black, .1);
+            border-bottom: 3px solid $color-error;
+        }
     }
+}
+
+sl-input::part(base) {
+    background-color: $color-background;
+    margin-right: 1rem;
+}
+sl-input::part(input) {
+    color: $color-white;
+    font-size: $default-font-size;
+
+    &:focus {
+        border-color: $color-primary;
+    }
+}
+sl-input::part(label) {
+    font-size: $default-font-size;
+}
+
+sl-button::part(label) {
+    font-size: $default-font-size;
 }

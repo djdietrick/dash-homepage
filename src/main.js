@@ -4,6 +4,7 @@ import store from './store'
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/functions';
+import 'firebase/auth';
 
 import './styles/main.scss';
 import ShoelaceModelDirective from '@shoelace-style/vue-sl-model';
@@ -25,6 +26,7 @@ firebase.initializeApp({
 
 export const db = firebase.firestore();
 export const functions = firebase.functions();
+export const auth = firebase.auth();
 
 new Vue({
   store,

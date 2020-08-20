@@ -7,7 +7,7 @@
                 <sl-button @click="getCurrentLocationAndFetch"><sl-icon name="geo"></sl-icon></sl-button>
             </sl-form>
         </div>
-        <div class="weather__current">
+        <div v-if="weather.currently !== undefined" class="weather__current">
             <div class="weather__current__basics">
                 <h1 class="weather__current--temperature">{{Math.trunc(weather.currently.temperature)}}&#176;</h1>
                 <sl-icon class="weather__current--icon" name="sun"></sl-icon>
@@ -17,16 +17,15 @@
                 <p class="weather__current__detail">Humidity: {{weather.currently.humidity}}</p>
                 <p class="weather__current__detail">Wind Speed: {{weather.currently.windSpeed}}</p>
                 <p class="weather__current__detail">UV Index: {{weather.currently.uvIndex}}</p>
-                <canvas id="rain" width="8rem" height="5rem"></canvas>
+                <canvas ref="rain" width="8rem" height="5rem"></canvas>
             </div>
         </div>
-        <div class="weather__forecast">
+        <div v-if="weather.daily !== undefined" class="weather__forecast">
             <div v-for="(day, index) in weather.daily.data.slice(1)" :key="index" class="weather__forecast__day">
                 <p class="weather__forecast--day">{{getForecastDate(day.time)}}</p>
                 <p class="weather__forecast--day">{{getDayOfWeek(day.time)}}</p>
                 <sl-icon class="weather__forecast--icon" name="sun"></sl-icon>
-                <p class="weather__forecast--temps">{{Math.trunc(day.apparentTemperatureHigh)}}&#176; / 
-                    {{Math.trunc(day.apparentTemperatureLow)}}&#176;</p>       
+                <p class="weather__forecast--temps">{{Math.trunc(day.apparentTemperatureHigh)}}&#176;/{{Math.trunc(day.apparentTemperatureLow)}}&#176;</p>       
                 <p class="weather__forecast--temps"><sl-icon class="droplet" name="droplet"></sl-icon> 
                     {{Math.trunc(day.precipProbability * 100)}}%</p>                 
             </div>
@@ -42,7 +41,8 @@ import moment from 'moment';
 export default {
     data() {
         return {
-            newLocation: ''
+            newLocation: '',
+            mounted: false
         }
     },
     methods: {
@@ -66,21 +66,13 @@ export default {
         },
         getDayOfWeek(time) {
             return moment.unix(time).format("ddd");
-        }
-    },
-    computed: {
-        ...mapGetters({
-            location: 'getLocation',
-            weather: 'getWeather'
-        })
-    },
-    watch: {
-        location: function(l) {
-            this.newLocation = l;
         },
-        weather: function(w) {
-            let precips = w.minutely.data.slice(1).map(min => min.precipIntensity * 100);
-            new Chart(document.getElementById('rain'), {
+        updateChart() {
+            if(!this.weather.minutely)
+                return;
+
+            let precips = this.weather.minutely.data.slice(1).map(min => min.precipIntensity * 100);
+            new Chart(this.$refs.rain, {
                 type: 'line',
                 data: {
                     labels: [0, 10, 20, 30, 40, 50, 60],
@@ -100,7 +92,7 @@ export default {
                                 color: "white"
                                 },
                             ticks: {
-                                suggestedMax: 100,
+                                suggestedMax: 1,
                                 suggestedMin: 0
                             }
                         }]
@@ -114,13 +106,33 @@ export default {
             });
         }
     },
-    mounted() {
+    computed: {
+        ...mapGetters({
+            location: 'getLocation',
+            weather: 'getWeather'
+        })
+    },
+    watch: {
+        location: function(l) {
+            this.newLocation = l;
+        },
+        weather: function(w) {
+            if(this.mounted) {
+                this.updateChart();
+            }
+        }
+    },
+    created() {
         if(this.location.length > 0) {
             this.setLocationAndFetch(this.location);
         } else {
-           this.getCurrentLocationAndFetch();
+            this.getCurrentLocationAndFetch();
         }
         this.newLocation = this.location;
+    },
+    mounted() {
+        this.mounted = true;
+        this.updateChart();
     }
 }
 </script>
@@ -129,7 +141,7 @@ export default {
 @import "../styles/main.scss";
 .weather {
     background-color: $color-grey-dark-3;
-    border-radius: 3rem;
+    border-radius: 1rem;
 
     display: grid;
     grid-template-rows: 5rem minmax(1fr, 35rem) minmax(1fr, 25rem);
@@ -145,14 +157,8 @@ export default {
             align-items: center;
         }
 
-        &--input::part(base) {
-            width: 20rem;
-            background-color: $color-background;
+        sl-input {
             margin-right: 1rem;
-        }
-        &--input::part(input) {
-            color: $color-white;
-            font-size: $default-font-size;
         }
 
         sl-icon {

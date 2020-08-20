@@ -11,16 +11,59 @@ const getters = {
 const mutations = {
     setLinks: (state, links) => state.links = links,
     addLink: (state, link) => {
-
+        if(state.links.find(l => l.url === link.url))
+            return;
+        state.links.push(link);
+    },
+    removeLink: (state, url) => {
+        state.links = state.links.filter(link => link.url != url);
     }
 }
 
 const actions = {
-    async fetchLinks({commit}) {
+    async fetchLinks({commit, rootState}) {
+        if(!rootState.user)
+            throw new Error("Not logged in");
 
+        // Commenting out for now and just using local storage
+        
+        // db.collection('users').doc(rootState.user.userId).collection('links').get()
+        //     .then(snapshot => {
+        //         let links = [];
+        //         for(let i = 0; i < snapshot.docs.length; i++) {
+        //             links.push(snapshot.docs[i].data());
+        //         }
+        //         commit('setLinks', links);
+        //     })
     },
-    async addLink({commit}, link) {
+    addLink({commit, rootState}, link) {
+        if(!rootState.user)
+            throw new Error("Not logged in");
+
         commit('addLink', link);
+
+        // Commenting out for now, can be used to store links in a Firestore db
+        // Having trouble storing urls, need to format them somehow
+
+        // db.collection('users').doc(rootState.user.userId).collection('links')
+        //     .doc(link.url).set({
+        //         url: link.url,
+        //         name: link.name,
+        //         category: link.category
+        //     }).then(() => {
+        //     }).catch((e) => {
+        //         console.error(e);
+        //     });
+    },
+    removeLink({commit, rootState}, link) {
+        if(!rootState.user)
+            throw new Error("Not logged in");
+        
+        // Commenting out for now, will uncomment when using Firestore
+        // await db.collection('users').doc(rootState.user.userId).collection('links')
+        //     .doc(link.url).delete();
+        
+        commit('removeLink', link.url);
     }
 }
 
