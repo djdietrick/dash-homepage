@@ -12,6 +12,10 @@
             </div>
         </sl-dropdown>
 
+        <div v-if="!hasLinks" class="links__placeholder">
+            <h2>Add links here for later</h2>
+        </div>
+
         <div v-for="(ls, category) in linksByCategory" :key="category" class="links__category">
             <h2>{{category.charAt(0).toUpperCase() + category.slice(1)}}</h2>
             <div v-for="link in ls" :key="link.url" class="link">
@@ -26,6 +30,7 @@
 <script>
 import {mapGetters, mapActions} from 'vuex';
 import axios from 'axios';
+import moment from 'moment';
 export default {
     data() {
         return {
@@ -46,6 +51,9 @@ export default {
                 lbc[this.links[i].category].push(this.links[i]);
             }
             return lbc;
+        },
+        hasLinks() {
+            return Array.isArray(this.links) && this.links.length !== 0
         }
     },
     methods: {
@@ -91,6 +99,13 @@ export default {
         sl-menu-divider::part(base) {
             opacity: 0.2;
         }
+    }
+
+    &__placeholder {
+        opacity: 0.7;
+        text-align: center;
+        margin: 0 auto;
+        margin-top: 20rem;
     }
 }
 

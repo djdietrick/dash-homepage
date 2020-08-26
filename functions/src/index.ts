@@ -2,22 +2,24 @@ import * as functions from 'firebase-functions';
 import * as moment from 'moment';
 import axios from 'axios';
 
-const key = functions.config().darksky.key;
-const url = `https://api.darksky.net/forecast/${key}/`;
 
-const mapBoxKey = functions.config().mapbox.key;
+const dskey = functions.config().darksky.key;
+const dsurl = `https://api.darksky.net/forecast/${dskey}/`;
+
+const mbkey = functions.config().mapbox.key;
+const tkey = functions.config().tiingo.key;
 
 export const fetchWeather = functions.https.onCall((data, context) => {
   const coordinates = data;
 
-  return axios.get(`${url}${coordinates.lat},${coordinates.long}`)
+  return axios.get(`${dsurl}${coordinates.lat},${coordinates.long}`)
     .then(res => {
       return res.data;
     });
 });
 
 export const getLatLong = functions.https.onCall((data, context) => {
-  const mbUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${data}.json?access_token=${mapBoxKey}&limit=1`;
+  const mbUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${data}.json?access_token=${mbkey}&limit=1`;
 
   return axios.get(mbUrl)
     .then(res => {
@@ -33,7 +35,7 @@ export const getLatLong = functions.https.onCall((data, context) => {
 });
 
 export const getLocation = functions.https.onCall((data, context) => {
-  const mbUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${data.long},${data.lat}.json?access_token=${mapBoxKey}&limit=1`;
+  const mbUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${data.long},${data.lat}.json?access_token=${mbkey}&limit=1`;
   return axios.get(mbUrl)
     .then(res => {
       return res.data;
@@ -41,20 +43,41 @@ export const getLocation = functions.https.onCall((data, context) => {
 });
 
 export const getStockPrices = functions.https.onCall((data, context) => {
-  const {ticker} = data;
-  const now = moment();
-  const past = moment().subtract(1, 'years');
-  const format = 'YYYY-d-M'
+  const tickers = data.tickers;
+  if(!tickers)
+    throw new Error("Must supply tickers");
 
-  return axios.get(`https://api.tiingo.com/tiingo/daily/${ticker}/prices?
-    token=${functions.config().tiingo.key}
-    &startDate=${now.format(format)}&endDate=${past.format(format)}`)
-    .then((res) => {
-      return res.data;
-    }).catch((err) => {
-      return err;
-    });
+  const now = moment();
+  const past = moment().subtract(1, 'months');
+  const format = 'YYYY-M-D'
+
+  let responses = new Array();
+  for(let i = 0; i < tickers.length; i++) {
+    responses.push(axios.get(`https://api.tiingo.com/tiingo/daily/${tickers[i]}/prices?token=${tkey}&startDate=${past.format(format)}&endDate=${now.format(format)}`)
+      .then((res) => {
+        return {
+          ticker: tickers[i],
+          prices: res.data
+        };
+      }).catch((err) => {
+        return err;
+      }))
+  }
+
+  return Promise.all(responses).then(prices => { return prices });
 });
 
-//https://api.tiingo.com/tiingo/daily/<ticker>/prices
-//https://api.tiingo.com/tiingo/daily/<ticker>/prices?startDate=2012-1-1&endDate=2016-1-1 
+export const getStockMetaData = functions.https.onCall((data, context) => {
+  try {
+    const ticker = data.ticker;
+    if(!ticker)
+      throw new Error("Must supply ticker");
+
+    return axios.get(`https://api.tiingo.com/tiingo/daily/${ticker}?token=${tkey}`)
+      .then(res => {return res.data})
+      .catch(e => {return "Invalid ticker"});
+
+  } catch(e) {
+    return e;
+  }
+});

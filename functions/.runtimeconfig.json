@@ -1,0 +1,11 @@
+{
+  "darksky": {
+    "key": "e748aa43a84ecca503d0b3f566a1b569"
+  },
+  "mapbox": {
+    "key": "pk.eyJ1IjoiZGpkaWV0cmljayIsImEiOiJjangzZGgyc3gwMG5pNDNvYTM3bHZpdXFpIn0.9Qt4qIZoQwiPkeW451WUuA"
+  },
+  "tiingo": {
+    "key": "4d0a8591ad08391e97af902bb9ebc309163a728f"
+  }
+}
