@@ -1,4 +1,5 @@
 import * as functions from 'firebase-functions';
+import * as moment from 'moment';
 import axios from 'axios';
 
 const key = functions.config().darksky.key;
@@ -38,3 +39,22 @@ export const getLocation = functions.https.onCall((data, context) => {
       return res.data;
     })
 });
+
+export const getStockPrices = functions.https.onCall((data, context) => {
+  const {ticker} = data;
+  const now = moment();
+  const past = moment().subtract(1, 'years');
+  const format = 'YYYY-d-M'
+
+  return axios.get(`https://api.tiingo.com/tiingo/daily/${ticker}/prices?
+    token=${functions.config().tiingo.key}
+    &startDate=${now.format(format)}&endDate=${past.format(format)}`)
+    .then((res) => {
+      return res.data;
+    }).catch((err) => {
+      return err;
+    });
+});
+
+//https://api.tiingo.com/tiingo/daily/<ticker>/prices
+//https://api.tiingo.com/tiingo/daily/<ticker>/prices?startDate=2012-1-1&endDate=2016-1-1 

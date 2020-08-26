@@ -2,6 +2,7 @@
   <div class="home">
       <Weather/>
       <Links class="linksComp"/>
+      <Stocks />
       <sl-button class="menu__trigger" @click="showMenu"><sl-icon name="chevron-double-left"></sl-icon></sl-button>
       <sl-drawer class="menu" ref="menu">
           <sl-button class="logout" @click="logout">Logout</sl-button>
@@ -13,13 +14,15 @@
 // @ is an alias to /src
 import Weather from '@/components/Weather.vue'
 import Links from '@/components/Links.vue'
+import Stocks from '@/components/Stocks.vue';
 import {mapActions} from 'vuex';
 
 export default {
   name: 'Home',
   components: {
     Weather,
-    Links
+    Links,
+    Stocks
   },
   methods: {
     ...mapActions(['logout']),

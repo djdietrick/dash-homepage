@@ -5,6 +5,7 @@ import createPersistedState from 'vuex-persistedstate';
 import auth from './modules/auth';
 import weather from './modules/weather';
 import links from './modules/links';
+import stocks from './modules/stocks';
 
 Vue.use(Vuex)
 
@@ -25,7 +26,8 @@ export default new Vuex.Store({
   },
   modules: {
     weather,
-    links
+    links,
+    stocks
   },
   plugins: [
     createPersistedState({
