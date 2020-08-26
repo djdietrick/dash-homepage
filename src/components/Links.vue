@@ -13,7 +13,8 @@
         </sl-dropdown>
 
         <div v-if="!hasLinks" class="links__placeholder">
-            <h2>Add links here for later</h2>
+            <h2>Link Corkboard</h2>
+            <h3>Add links here for later</h3>
         </div>
 
         <div v-for="(ls, category) in linksByCategory" :key="category" class="links__category">
@@ -129,7 +130,6 @@ export default {
     }
 
     &__text {
-        font-size: 1rem;
         &:hover {
             cursor: pointer;
         }

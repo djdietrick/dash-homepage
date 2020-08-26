@@ -12,9 +12,13 @@
                     </sl-form>
                 </div>
             </sl-dropdown>
-            <sl-button @click="remove" :disabled="selectedTicker.length === 0"><sl-icon name="dash"></sl-icon></sl-button>
+            <sl-button @click="remove" :disabled="selectedTicker.size === 0"><sl-icon name="dash"></sl-icon></sl-button>
         </div>
         <div class="stocks__summary">
+            <div class="stock__placeholder" v-if="tickers.size === 0">
+                <h2>Stock Monitor</h2>
+                <h3>Add stocks here</h3>
+            </div>
             <div class="stock" v-for="(priceList, index) in prices" :key="index"
                 :class="{ selected: index == selectedTicker }"
                 @click="selectedTicker = index">
@@ -154,6 +158,13 @@ export default {
             
             display: flex;
             flex-direction: column;
+
+            &__placeholder {
+                opacity: 0.7;
+                text-align: center;
+                margin: 0 auto;
+                margin-top: 3rem;
+            }
 
         }
     }
