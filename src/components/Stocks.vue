@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="stocks__details">
-            <canvas ref="prices"></canvas>
+            <canvas ref="prices" width="8rem" height="5rem"></canvas>
         </div>
     </div>
 </template>
