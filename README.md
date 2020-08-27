@@ -1,6 +1,6 @@
 # dash-homepage
 
-![UI](https://github.com/djdietrick/dash-homepage/tree/master/public/ui.PNG)
+![UI](/public/ui.PNG)
 
 This app is a home landing page with widgets to fetch the current weather, keep a collection of links to reduce tabs and save memory, and a stock monitor.  It utilizes Firebase platform to manage user authentication, datastore, and serverless functions which drives a web UI built with Vue.
 
