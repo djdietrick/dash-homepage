@@ -27,41 +27,40 @@ const actions = {
 
         // Commenting out for now and just using local storage
         
-        // db.collection('users').doc(rootState.user.userId).collection('links').get()
-        //     .then(snapshot => {
-        //         let links = [];
-        //         for(let i = 0; i < snapshot.docs.length; i++) {
-        //             links.push(snapshot.docs[i].data());
-        //         }
-        //         commit('setLinks', links);
-        //     })
+        db.collection('users').doc(rootState.user.userId).collection('links').get()
+            .then(snapshot => {
+                let links = [];
+                for(let i = 0; i < snapshot.docs.length; i++) {
+                    links.push(snapshot.docs[i].data());
+                }
+                commit('setLinks', links);
+            })
     },
     addLink({commit, rootState}, link) {
         if(!rootState.user)
             throw new Error("Not logged in");
 
+        link.url = link.url.replace(/^(https?:\/\/)?(w{3})?\.?/g, '')
+
         commit('addLink', link);
 
-        // Commenting out for now, can be used to store links in a Firestore db
-        // Having trouble storing urls, need to format them somehow
-
-        // db.collection('users').doc(rootState.user.userId).collection('links')
-        //     .doc(link.url).set({
-        //         url: link.url,
-        //         name: link.name,
-        //         category: link.category
-        //     }).then(() => {
-        //     }).catch((e) => {
-        //         console.error(e);
-        //     });
+        db.collection('users').doc(rootState.user.userId).collection('links')
+            .doc(link.url).set({
+                url: link.url,
+                name: link.name,
+                category: link.category
+            }).then(() => {
+            }).catch((e) => {
+                console.error(e);
+            });
     },
-    removeLink({commit, rootState}, link) {
+    async removeLink({commit, rootState}, link) {
         if(!rootState.user)
             throw new Error("Not logged in");
         
         // Commenting out for now, will uncomment when using Firestore
-        // await db.collection('users').doc(rootState.user.userId).collection('links')
-        //     .doc(link.url).delete();
+        await db.collection('users').doc(rootState.user.userId).collection('links')
+            .doc(link.url).delete();
         
         commit('removeLink', link.url);
     }

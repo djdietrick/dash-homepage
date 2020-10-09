@@ -7,7 +7,7 @@
         <sl-input label="Email" v-sl-model="email"></sl-input>
         <sl-input label="Password" v-sl-model="password" type="password" toggle-password></sl-input>
         <sl-input label="Confirm Password" v-sl-model="confirmPassword" type="password" toggle-password></sl-input>
-        <sl-button @click="validateAndSubmit">Login</sl-button>
+        <sl-button @click="validateAndSubmit">Signup</sl-button>
     </sl-form>
 </template>
 
