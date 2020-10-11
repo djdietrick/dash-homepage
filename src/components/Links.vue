@@ -19,7 +19,7 @@
 
         <div v-for="(ls, category) in linksByCategory" :key="category" class="links__category">
             <h2>{{category.charAt(0).toUpperCase() + category.slice(1)}}</h2>
-            <div v-for="link in ls" :key="link.url" class="link">
+            <div v-for="link in ls" :key="link.id" class="link">
                 <p @click="openLink(link.url)" class="link__text">{{link.name}}</p>
                 <sl-icon name="x-square" class="removeLink" @click="removeLink(link)"></sl-icon>
             </div>

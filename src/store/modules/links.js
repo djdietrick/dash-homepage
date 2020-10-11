@@ -1,4 +1,5 @@
 import {db} from '../../main.js';
+import { v4 as uuidv4 } from 'uuid';
 
 const state = {
     links: []
@@ -11,12 +12,12 @@ const getters = {
 const mutations = {
     setLinks: (state, links) => state.links = links,
     addLink: (state, link) => {
-        if(state.links.find(l => l.url === link.url))
+        if(state.links.find(l => l.id === link.id))
             return;
         state.links.push(link);
     },
-    removeLink: (state, url) => {
-        state.links = state.links.filter(link => link.url != url);
+    removeLink: (state, id) => {
+        state.links = state.links.filter(link => link.id != id);
     }
 }
 
@@ -36,16 +37,20 @@ const actions = {
                 commit('setLinks', links);
             })
     },
-    addLink({commit, rootState}, link) {
+    async addLink({commit, rootState}, link) {
         if(!rootState.user)
             throw new Error("Not logged in");
 
         link.url = link.url.replace(/^(https?:\/\/)?(w{3})?\.?/g, '')
+        //link.url = link.url.replace('/', '\\/')
 
-        commit('addLink', link);
+        // TODO : Replace this with cloud function, use puppeteer to get title automatically and use that as key
 
-        db.collection('users').doc(rootState.user.userId).collection('links')
-            .doc(link.url).set({
+        link.id = uuidv4();
+
+        await db.collection('users').doc(rootState.user.userId).collection('links')
+            .doc(link.id).set({
+                id: link.id,
                 url: link.url,
                 name: link.name,
                 category: link.category
@@ -53,6 +58,9 @@ const actions = {
             }).catch((e) => {
                 console.error(e);
             });
+
+        commit('addLink', link);
+
     },
     async removeLink({commit, rootState}, link) {
         if(!rootState.user)
@@ -60,9 +68,9 @@ const actions = {
         
         // Commenting out for now, will uncomment when using Firestore
         await db.collection('users').doc(rootState.user.userId).collection('links')
-            .doc(link.url).delete();
+            .doc(link.id).delete();
         
-        commit('removeLink', link.url);
+        commit('removeLink', link.id);
     }
 }
 
