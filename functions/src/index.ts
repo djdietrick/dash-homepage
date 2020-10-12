@@ -81,8 +81,3 @@ export const getStockMetaData = functions.https.onCall((data, context) => {
     return e;
   }
 });
-
-export const addLink = functions
-  .runsWith({memory: '1GB'}).https.onCall(async (data, context) => {
-    
-})
