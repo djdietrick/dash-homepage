@@ -1,5 +1,14 @@
 {
   "projects": {
-    "default": "dash-homepage-b17fb"
+    "default": "dash-website-1b9cb"
+  },
+  "targets": {
+    "dash-website-1b9cb": {
+      "hosting": {
+        "homepage": [
+          "dash-homepage"
+        ]
+      }
+    }
   }
 }

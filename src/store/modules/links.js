@@ -28,7 +28,7 @@ const actions = {
 
         // Commenting out for now and just using local storage
         
-        db.collection('users').doc(rootState.user.userId).collection('links').get()
+        db.collection('links').doc(rootState.user.userId).collection('links').get()
             .then(snapshot => {
                 let links = [];
                 for(let i = 0; i < snapshot.docs.length; i++) {
@@ -48,7 +48,7 @@ const actions = {
 
         link.id = uuidv4();
 
-        await db.collection('users').doc(rootState.user.userId).collection('links')
+        await db.collection('links').doc(rootState.user.userId).collection('links')
             .doc(link.id).set({
                 id: link.id,
                 url: link.url,
@@ -67,7 +67,7 @@ const actions = {
             throw new Error("Not logged in");
         
         // Commenting out for now, will uncomment when using Firestore
-        await db.collection('users').doc(rootState.user.userId).collection('links')
+        await db.collection('links').doc(rootState.user.userId).collection('links')
             .doc(link.id).delete();
         
         commit('removeLink', link.id);

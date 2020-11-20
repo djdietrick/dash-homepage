@@ -31,7 +31,7 @@ export default new Vuex.Store({
   },
   plugins: [
     createPersistedState({
-      key: "dash-homepage"
+      key: process.env.VUE_APP_LOCAL_STORAGE_NAME
     })
   ]
 })

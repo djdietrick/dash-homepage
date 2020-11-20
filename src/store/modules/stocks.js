@@ -23,7 +23,7 @@ const mutations = {
 const actions = {
     async fetchStockPrices({state, commit, rootState}) {
         try {
-            const snapshot = await db.collection('users').doc(rootState.user.userId)
+            const snapshot = await db.collection('stocks').doc(rootState.user.userId)
                 .collection('stocks').get();
             
             let tickers = new Set();
@@ -64,7 +64,7 @@ const actions = {
         if(typeof mdres.data === "string") 
             throw new Error(mdres.data);
 
-        await db.collection('users').doc(rootState.user.userId).collection('stocks')
+        await db.collection('stocks').doc(rootState.user.userId).collection('stocks')
             .doc(ticker).set({
                 ticker
             }).then(() => {
@@ -75,7 +75,7 @@ const actions = {
         dispatch('fetchStockPrice', ticker);
     },
     async removeTicker({commit, rootState}, ticker) {
-        await db.collection('users').doc(rootState.user.userId).collection('stocks')
+        await db.collection('stocks').doc(rootState.user.userId).collection('stocks')
             .doc(ticker).delete();
         commit('removeTicker', ticker);
         commit('removePrice', ticker);
